@@ -1,51 +1,24 @@
-#Taken from https://github.com/OLIMEX/raspberrypi/blob/master/MOD-Wii-NUNCHUK/mod-nunchuck.py
-
-#!/usr/bin/env python
-import smbus
-import sys
-import os
-import time
-def Initialize():
-"Initalize MOD-Wii-UEXT-Nunchuck"
-bus = smbus.SMBus(0)
-address = 0x52
-command = 0xF0
-data = 0x55
-bus.write_byte_data(address, command, data)
-return
-def main():
-print "MOD-Wii-UEXT-Nunchuck"
-bus = smbus.SMBus(0)
-address = 0x52
-command = 0x00
-Initialize()
-while True:
-time.sleep(0.1)
-os.system('clear')
-buf = bus.read_i2c_block_data(address, command, 6)
-data = [0x00]*6
-for i in range(len(buf)):
-# buf[i] ^= 0x17
-# buf[i] += 0x17
-data[i] = buf[i]
-z = data[5] & 0x01
-c = (data[5] >> 1) & 0x01
-data[2] <<= 2
-data[2] |= (data[5] >> 2) & 0x03
-data[3] <<= 2
-data[3] |= (data[5] >> 6) & 0x03
-print "Analog X: %d" %(data[0])
-print "Analog Y: %d" %(data[1])
-print "X-axis: %d" %(data[2])
-print "Y-axis: %d" %(data[3])
-print "Z-axis: %d " %(data[4])
-if z == 1:
-print "Button Z: NOT PRESSED"
-else:
-print "Button Z: PRESSED"
-if c == 1:
-print "Button C: NOT PRESSED"
-else:
-print "Button C: PRESSED"
-if __name__ == '__main__':
-main()
+#!/usr/bin/python
+import cwiid
+from time import sleep
+print 'Put Wiimote in discoverable mode now (press 1+2)...'
+w = cwiid.Wiimote()
+# Request nunchuk to be active.
+w.rpt_mode = cwiid.RPT_EXT
+# Turn on LED1 so we know we're connected.
+w.led = 1
+while( 1 ):
+    # If nunchuk is active then dump the values.
+    if w.state.has_key('nunchuk'):
+        print 'Nunchuk: btns=%.2X stick=%r acc.x=%d acc.y=%d acc.z=%d' % /
+            (w.state['nunchuk']['buttons'], w.state['nunchuk']['stick'],
+             w.state['nunchuk']['acc'][cwiid.X],
+             w.state['nunchuk']['acc'][cwiid.Y],
+             w.state['nunchuk']['acc'][cwiid.Z])
+        if w.state['nunchuk']['buttons']:
+            print "Exit button detected."
+            exit( 0 )
+        sleep( 0.1 )
+    else:
+        print "No Nunchuk"
+       sleep( 0.5 )
