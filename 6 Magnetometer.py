@@ -49,69 +49,35 @@ import time
 SLEEP_TIME = 0.02
 
 # Set up device
-
 DEVICE_ADDRESS = 0x1e      #7 bit address (will be left shifted to add the read write bit)
-DEVICE_REG1 = 0xF0
-DEVICE_REG2 = 0xFB
-DEVICE_REGTYPE = 0xFA
-full_data = [0,0,0,0,0,0,0]
-device_data = [0, 0, 0, 0, 0, 0]
-device_text = '000000000000'
+DEVICE_REG0 = 0x00
+DEVICE_REG1 = 0x01
+DEVICE_REG2 = 0x02
 
-
-# To initialise each device:
-# you must first write 0x55 to 0x(4)a400f0 (for the Pi, this is just 0xf0),
-# then 0 to 0x(4)a400fb (0xfb)
-#
 def Device_Setup():
-    # Set up the device by writing 0x55 to Register 1 and 0x00 to Register 2
+    # Set up the device by writing 0x70 to Register 0
+	# 0x20 to Register 1 (which corresponds to gauss of 1090)
+	# and 0x00 to Register 2 (for continuous measurement)
     #try
-    bus.write_byte_data(DEVICE_ADDRESS, DEVICE_REG1, 0x55)
-    bus.write_byte_data(DEVICE_ADDRESS, DEVICE_REG2, 0x00)
+    bus.write_byte_data(DEVICE_ADDRESS, DEVICE_REG1, 0x70)
+    bus.write_byte_data(DEVICE_ADDRESS, DEVICE_REG1, 0x20)
+	bus.write_byte_data(DEVICE_ADDRESS, DEVICE_REG2, 0x00)
 
 # End of Device_Setup
     
-def Get_Device_Connected():
-    # Determine the device connected - by sending a byte to Register REGTYPE
-    # and look at the 6 bytes of data returned
-    
-    bus.write_byte_data(DEVICE_ADDRESS, DEVICE_REGTYPE, 0x00)
-    time.sleep(SLEEP_TIME)
-    full_data = bus.read_i2c_block_data(DEVICE_ADDRESS, DEVICE_REGTYPE) 
-
-    #Extract first 6 bytes and store as a string in hex format
-    device_text = ''
-    for i in range(0,6):
-        device_text = device_text + ("%02x" % full_data[i])
-    #next i
-
-    if device_text == '0000a4200103':
-        device_connected = 'Guitar'
-    elif device_text == '0100a4200103':
-        device_connected = 'Drums'
-    else:
-        device_connected = 'Unknown'
-    #end if
-
-    return device_connected
-
-#End of Get_Device_Connected
-
 def MyReadData(MY_DEVICE_ADDRESS, MY_DEVICE_REG, Debugmode):
-    # this is my function to read only 6 bytes of data returned over I2C
+    # this is my function to read only 8 bytes of data returned over I2C
     # instead of reading 256 bytes!
     # and is equivalent to read_i2c_block_data
-    # Returns a list of 6 bytes
+    # Returns a list of 8 bytes
 
     # First send a byte of data to request the information
 
-    bus.write_byte_data(MY_DEVICE_ADDRESS, MY_DEVICE_REG, 0x00)
-    time.sleep(SLEEP_TIME)
     full_data = bus.read_i2c_block_data(MY_DEVICE_ADDRESS, MY_DEVICE_REG) 
 
-    #Extract first 6 bytes
+    #Extract first 8 bytes
     device_text = ''
-    for i in range(0,6):
+    for i in range(0,7):
         device_data[i] = full_data[i]
         device_text = device_text + ("%02x" % full_data[i])
     #next i
@@ -124,3 +90,16 @@ def MyReadData(MY_DEVICE_ADDRESS, MY_DEVICE_REG, Debugmode):
     return device_data
 
 # End of MyReadData
+
+def Magnet_Value(MY_DATA, MY_AXIS):
+    # this is my function to calculate the value of each axis
+	# Axis 0 = X  (byte 3)
+	# Axis 1 = Z  (byte 5)
+	# Axis 2 = Y  (byte 7)
+	m_axis = MY_AXIS * 2 + 1
+	# the value is stored as a binary number 00000000 00000000 over two bytes
+	m_value = MY_DATA[m_axis] * 256 + MY_DATA[m_axis + 1]
+    # if the value is above 10000000 00000000, then it is negative 
+	if m_value > (128 * 256):
+	    m_value = (128 * 256) - m_value
+	return m_value
