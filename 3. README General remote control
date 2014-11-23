@@ -1,0 +1,14 @@
+General remote control code
+---------------------------
+
+Used for the following challenges:
+  Obstacle course
+  Robot golf
+  Straight line speed test
+  Sumo battle
+
+Using a Wii remote to control the car
+Requires the cwiid python library to be installed
+
+Button presses:
+  to follow
