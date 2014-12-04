@@ -2,7 +2,7 @@
 #
 # Proximity challenge
 #
-# Purpose of the program:
+# Purpose of this Python (version 2) program:
 # To move the robot towards a wall, and for it to stop before it reaches it.
 #
 # To do this, the robot needs to:
@@ -16,6 +16,20 @@
 #   Ryanteck motor controller board
 #    ...  connected to two motors which control two wheels on the robot
 #   Ultrasonic sensor
+
+# You will also need to connect to the Pi remotely to run this code
+# as the robot will start moving as soon as this code is run
+# and you don't want it connected to things if this happens!
+#
+# We have added a Wifi USB dongle to the Pi
+# and connected the Pi to a Wifi network
+# We have enabled SSH in the advanced menu of raspi-config
+# (please refer to raspberrypi.org for fuller instructions) 
+# and connected using a Windows laptop running Putty
+# Once logged in, the command to run this code is:
+#    sudo python 2_Proximity_challenge.py
+# (assuming the code is stored in the current directory)
+
 
 # Implementation:
 #
@@ -89,6 +103,8 @@ GPIO.setup(GPIO_TRIGGER, GPIO.OUT)
 GPIO.setup(GPIO_ECHO, GPIO.IN)
 
 # Set the stop distance in cm
+#   - we have set this by measuring the distance from the sensor to the front of the car
+#     and added on a margin to reflect that we are using a moving average of three readings
 STOP_DISTANCE = 15
 
 # Set up variables to record the distance
@@ -160,4 +176,5 @@ except KeyboardInterrupt:
 
     # Reset GPIO settings
     GPIO.cleanup()
-
+    
+# ---- END OF CODE ----

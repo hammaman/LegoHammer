@@ -2,7 +2,7 @@
 #
 # Three Point Turn Challenge
 #
-# Purpose of the program:
+# Purpose of this Python (version 2) program:
 # To move the robot on its own around the course, following a black line.
 #
 # To do this, the robot needs to:
@@ -15,6 +15,19 @@
 #   Ryanteck motor controller board
 #    ...  connected to two motors which control two wheels on the robot
 #   Three line sensors (each connected to GND, 3.3V and a GPIO pin)
+
+# You will also need to connect to the Pi remotely to run this code
+# as the robot will start moving as soon as this code is run
+# and you don't want it connected to things if this happens!
+#
+# We have added a Wifi USB dongle to the Pi
+# and connected the Pi to a Wifi network
+# We have enabled SSH in the advanced menu of raspi-config
+# (please refer to raspberrypi.org for fuller instructions) 
+# and connected using a Windows laptop running Putty
+# Once logged in, the command to run this code is:
+#    sudo python 1_Line_Sensors_challenge.py
+# (assuming the code is stored in the current directory)
 
 # Implementation:
 #

@@ -1,15 +1,40 @@
+# ---- CODE FOR PIWARS CHALLENGES ----
+#
+# General Python (version 2) code to move the robot for:
+#   Sumo Challenge
+#   Obstacle Course
+#   Speed test
+#
+# Purpose of the program:
+# To move the robot by controlling it with a Wiimote
+#
+# Hardware required:
+#   Raspberry Pi (any model)
+#   Ryanteck motor controller board
+#    ...  connected to two motors which control two wheels on the robot
+#   Bluetooth adapter
+#
+# Software required for the bluetooth adapter:
+#   You need to connect the Pi to the internet and
+#   download the bluetooth modules, by running the following
+#   commands from the LXTerminal:
+#     sudo apt-get install --no-install-recommends bluetooth
+#
 # This Python code requires the Cwiid module which is not part
 # of the standard Raspian build.  You will need to install this
 # by running the following command from the LXTerminal:
 #    apt-get install python-cwiid
 
-# To connect to a Wiimote, you will also need a bluetooth adapter
-# which has been set up and installed, by running the following
-# commands from the LXTerminal:
+# We recommend connecting to the Pi remotely to run this code
 #
-#   TO FOLLOW
-#
-#
+# We have added a Wifi USB dongle to the Pi
+# and connected the Pi to a Wifi network
+# We have enabled SSH in the advanced menu of raspi-config
+# (please refer to raspberrypi.org for fuller instructions) 
+# and connected using a Windows laptop running Putty
+# Once logged in, the command to run this code is:
+#    sudo python 3_Wiimote_interfacing.py
+# (assuming the code is stored in the current directory)
 
 import cwiid
 
@@ -143,4 +168,6 @@ while True:
 
     except RuntimeError:
         AllStop()
+        GPIO.cleanup()
     
+# ---- END OF CODE ----

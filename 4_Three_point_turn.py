@@ -2,12 +2,10 @@
 #
 # Three Point Turn Challenge
 #
-# Purpose of the program:
+# Purpose of this Python (version 2) program:
 # To move the robot on its own around the course.
 #
 # To do this, the robot needs to:
-#
-#  React to a start command
 #
 #  Move forwards for 150cm
 #  Turn left 90 degrees
@@ -25,6 +23,19 @@
 #   Raspberry Pi (any model)
 #   Ryanteck motor controller board
 #    ...  connected to two motors which control two wheels on the robot
+#
+# You will also need to connect to the Pi remotely to run this code
+# as the robot will start moving as soon as this code is run
+# and you don't want it connected to things if this happens!
+#
+# We have added a Wifi USB dongle to the Pi
+# and connected the Pi to a Wifi network
+# We have enabled SSH in the advanced menu of raspi-config
+# (please refer to raspberrypi.org for fuller instructions) 
+# and connected using a Windows laptop running Putty
+# Once logged in, the command to run this code is:
+#    sudo python 4_Three_point_turn.py
+# (assuming the code is stored in the current directory)
 
 # Implementation:
 #
@@ -49,7 +60,7 @@
 #      TIME_TO_ROTATE_360DEG in milliseconds
 #
 #  These are determined by timing the robot and entering the values below
-#  We recognise that this dependson the surface that the robot is on
+#  We recognise that this depends on the surface that the robot is on
 #  but this cannot be factored in before the event!
 
 TIME_TO_COVER_1M = 5.8
@@ -148,6 +159,10 @@ def Pause():
 #
 #  The python code to do this is as follows:
 
+#  We "try" the code in case it is cancelled by Ctrl-C
+#  and if it is cancelled by Ctrl-C, there is cleanup of the GPIO pins
+#  which stops the robot continuing what it was doing
+
 try:
 
     time.sleep(1)
@@ -219,6 +234,7 @@ try:
     AllStop()
     print "Challenge completed!"
 
+# Clean up if Ctrl-C is pressed
 except KeyboardInterrupt:
 
     #Reset GPIO settings
